@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Lab3_1
 {
@@ -63,18 +65,30 @@ namespace Lab3_1
     class Program
     {
 
+        [STAThread]
         static void Main(string[] args)
         {
-            Analyzer analyzer = new Analyzer(1024, @"C:\Users\Vadik\Downloads\Telegram Desktop");
-            var barGraph = analyzer.Scan();
-            foreach (var item in barGraph)
+            Console.Write("Введите размер шага в байтах:\t\t");
+            uint step = Convert.ToUInt32(Console.ReadLine());
+            Console.Write("Введите начальную папку:\t\t");
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.InitialDirectory = @"C:\";
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                Console.WriteLine($"{analyzer.Step * item.Key} - { analyzer.Step * (item.Key + 1) - 1} ({item.Value.Count}):");
-                foreach (var file in item.Value)
+                Console.WriteLine(dialog.FileName);
+                Analyzer analyzer = new Analyzer(step, dialog.FileName);
+                var barGraph = analyzer.Scan();
+                foreach (var item in barGraph)
                 {
-                    Console.WriteLine($"\t\t{file.Length,13}\t\t{file.Name}");
+                    Console.WriteLine($"{analyzer.Step * item.Key} - { analyzer.Step * (item.Key + 1) - 1} ({item.Value.Count}):");
+                    foreach (var file in item.Value)
+                    {
+                        Console.WriteLine($"\t\t{file.Length,13}\t\t{file.Name}");
+                    }
                 }
             }
+
             Console.ReadKey();
 
         }
