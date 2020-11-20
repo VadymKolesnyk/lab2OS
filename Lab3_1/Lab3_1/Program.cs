@@ -76,7 +76,7 @@ namespace Lab3_1
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                Console.WriteLine(dialog.FileName);
+                Console.WriteLine(dialog.FileName + "\\");
                 Analyzer analyzer = new Analyzer(step, dialog.FileName);
                 var barGraph = analyzer.Scan();
                 foreach (var item in barGraph)
@@ -84,7 +84,7 @@ namespace Lab3_1
                     Console.WriteLine($"{analyzer.Step * item.Key} - { analyzer.Step * (item.Key + 1) - 1} ({item.Value.Count}):");
                     foreach (var file in item.Value)
                     {
-                        Console.WriteLine($"\t\t{file.Length,13}\t\t{file.Name}");
+                        Console.WriteLine($"\t\t{file.Length,13}\t\t{file.FullName.Substring(dialog.FileName.Length + 1)}");
                     }
                 }
             }
